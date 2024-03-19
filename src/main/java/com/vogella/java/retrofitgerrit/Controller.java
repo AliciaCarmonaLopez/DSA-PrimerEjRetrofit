@@ -15,18 +15,18 @@ public class Controller implements  Callback<List<Change>> {
 
 
     public void start(String username) {
-        this.username = username + "/";
+        this.username = username;
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL + this.username)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        GitHubAPI gerritAPI = retrofit.create(GitHubAPI.class);
+        GitHubAPI gitHubAPI = retrofit.create(GitHubAPI.class);
 
-        Call<List<Change>> call = gerritAPI.loadChanges("status:open");
+        Call<List<Change>> call = gitHubAPI.loadChanges(username, "status:open");
         call.enqueue(this);
 
     }
@@ -38,6 +38,7 @@ public class Controller implements  Callback<List<Change>> {
             changesList.forEach(change -> System.out.println("Identificador: " + change.getId() + " Nombre: "+ change.getName() + " Descripcion: " + change.getDescription()));
         } else {
             System.out.println(response.errorBody());
+
         }
     }
 
